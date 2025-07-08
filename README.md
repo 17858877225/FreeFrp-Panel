@@ -2,6 +2,9 @@
 
 基于 Vue 3 + TypeScript + Naive UI 的免费内网穿透服务前端项目。
 
+![10279000AEB2E6362716A6EA893A43F7](https://github.com/user-attachments/assets/5f3dadfe-86f4-46b9-b00b-57a89ab76644)
+
+
 ## 技术栈
 
 - **Vue 3** - 渐进式 JavaScript 框架
