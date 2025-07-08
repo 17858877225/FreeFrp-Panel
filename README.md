@@ -170,7 +170,4 @@ server {
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
 
 ## 联系方式
-
-- 项目地址：[GitHub Repository]
-- 问题反馈：[GitHub Issues]
-- 邮箱：[your-email@example.com]
+- 邮箱：[1069137617@qq.com]
