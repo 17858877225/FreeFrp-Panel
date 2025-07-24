@@ -4,7 +4,6 @@
 
 ![10279000AEB2E6362716A6EA893A43F7](https://github.com/user-attachments/assets/5f3dadfe-86f4-46b9-b00b-57a89ab76644)
 
-
 ## 技术栈
 
 - **Vue 3** - 渐进式 JavaScript 框架
@@ -18,6 +17,7 @@
 ## 功能特性
 
 ### 用户功能
+
 - 用户注册/登录
 - 用户仪表盘
 - 隧道管理（创建、编辑、删除、查看配置）
@@ -30,12 +30,14 @@
 - 每日签到
 
 ### 管理员功能
+
 - 用户管理（查看、封禁、修改用户组）
 - 隧道管理（查看、下线、删除）
 - 节点管理（添加、编辑、启用/禁用、删除）
 - 实名认证审核
 
 ### 用户组权限
+
 - **未实名认证**: 限速 8Mbps，最多 3 条隧道
 - **正式用户**: 限速 24Mbps，最多 10 条隧道
 - **赞助者**: 限速 128Mbps，最多 25 条隧道
@@ -145,11 +147,11 @@ server {
     server_name your-domain.com;
     root /path/to/dist;
     index index.html;
-    
+
     location / {
         try_files $uri $uri/ /index.html;
     }
-    
+
     location /api {
         proxy_pass http://backend-server:8080;
         proxy_set_header Host $host;
@@ -173,4 +175,5 @@ server {
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
 
 ## 联系方式
+
 - 邮箱：[1069137617@qq.com]

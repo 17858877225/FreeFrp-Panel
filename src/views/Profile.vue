@@ -28,14 +28,12 @@
               <n-input
                 :value="showAccessKey ? userStore.user?.accessKey : '••••••••••••••••'"
                 readonly
-                style="flex: 1; margin-right: 8px;"
+                style="flex: 1; margin-right: 8px"
               />
               <n-button size="small" @click="toggleAccessKey">
                 {{ showAccessKey ? '隐藏' : '显示' }}
               </n-button>
-              <n-button size="small" type="warning" @click="resetAccessKey">
-                重置
-              </n-button>
+              <n-button size="small" type="warning" @click="resetAccessKey"> 重置 </n-button>
             </div>
           </div>
         </div>
@@ -58,7 +56,7 @@
               show-password-on="mousedown"
             />
           </n-form-item>
-          
+
           <n-form-item label="新密码" path="newPassword">
             <n-input
               v-model:value="passwordForm.newPassword"
@@ -67,7 +65,7 @@
               show-password-on="mousedown"
             />
           </n-form-item>
-          
+
           <n-form-item label="确认新密码" path="confirmPassword">
             <n-input
               v-model:value="passwordForm.confirmPassword"
@@ -76,13 +74,9 @@
               show-password-on="mousedown"
             />
           </n-form-item>
-          
+
           <n-form-item>
-            <n-button
-              type="primary"
-              :loading="passwordLoading"
-              @click="handleChangePassword"
-            >
+            <n-button type="primary" :loading="passwordLoading" @click="handleChangePassword">
               修改密码
             </n-button>
           </n-form-item>
@@ -102,7 +96,7 @@
             </template>
           </n-result>
         </div>
-        
+
         <div v-else-if="userStore.user?.realNameStatus === 'pending'" class="pending-status">
           <n-result status="info" title="实名认证审核中">
             <template #footer>
@@ -110,12 +104,12 @@
             </template>
           </n-result>
         </div>
-        
+
         <div v-else class="verification-form">
-          <n-alert type="info" style="margin-bottom: 24px;">
+          <n-alert type="info" style="margin-bottom: 24px">
             完成实名认证后，您的用户组将升级为正式用户，享受更高的带宽和隧道数量限制。
           </n-alert>
-          
+
           <n-form
             ref="verificationFormRef"
             :model="verificationForm"
@@ -124,19 +118,13 @@
             label-width="auto"
           >
             <n-form-item label="真实姓名" path="realName">
-              <n-input
-                v-model:value="verificationForm.realName"
-                placeholder="请输入真实姓名"
-              />
+              <n-input v-model:value="verificationForm.realName" placeholder="请输入真实姓名" />
             </n-form-item>
-            
+
             <n-form-item label="身份证号" path="idCard">
-              <n-input
-                v-model:value="verificationForm.idCard"
-                placeholder="请输入身份证号"
-              />
+              <n-input v-model:value="verificationForm.idCard" placeholder="请输入身份证号" />
             </n-form-item>
-            
+
             <n-form-item>
               <n-button
                 type="primary"
@@ -154,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue';
 import {
   NCard,
   NTag,
@@ -165,135 +153,135 @@ import {
   NAlert,
   NResult,
   useMessage,
-  useDialog
-} from 'naive-ui'
-import { useUserStore } from '@/stores/user'
+  useDialog,
+} from 'naive-ui';
+import { useUserStore } from '@/stores/user';
 
-const message = useMessage()
-const dialog = useDialog()
-const userStore = useUserStore()
+const message = useMessage();
+const dialog = useDialog();
+const userStore = useUserStore();
 
-const showAccessKey = ref(false)
-const passwordLoading = ref(false)
-const verificationLoading = ref(false)
-const passwordFormRef = ref()
-const verificationFormRef = ref()
+const showAccessKey = ref(false);
+const passwordLoading = ref(false);
+const verificationLoading = ref(false);
+const passwordFormRef = ref();
+const verificationFormRef = ref();
 
 const passwordForm = reactive({
   currentPassword: '',
   newPassword: '',
-  confirmPassword: ''
-})
+  confirmPassword: '',
+});
 
 const verificationForm = reactive({
   realName: '',
-  idCard: ''
-})
+  idCard: '',
+});
 
 const validatePasswordSame = (rule: any, value: string) => {
-  return value === passwordForm.newPassword
-}
+  return value === passwordForm.newPassword;
+};
 
 const validateIdCard = (rule: any, value: string) => {
-  const idCardRegex = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-  return idCardRegex.test(value)
-}
+  const idCardRegex = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+  return idCardRegex.test(value);
+};
 
 const passwordRules = {
   currentPassword: {
     required: true,
     message: '请输入当前密码',
-    trigger: 'blur'
+    trigger: 'blur',
   },
   newPassword: [
     {
       required: true,
       message: '请输入新密码',
-      trigger: 'blur'
+      trigger: 'blur',
     },
     {
       min: 6,
       message: '密码长度不能少于6位',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   confirmPassword: [
     {
       required: true,
       message: '请确认新密码',
-      trigger: 'blur'
+      trigger: 'blur',
     },
     {
       validator: validatePasswordSame,
       message: '两次输入的密码不一致',
-      trigger: 'blur'
-    }
-  ]
-}
+      trigger: 'blur',
+    },
+  ],
+};
 
 const verificationRules = {
   realName: {
     required: true,
     message: '请输入真实姓名',
-    trigger: 'blur'
+    trigger: 'blur',
   },
   idCard: [
     {
       required: true,
       message: '请输入身份证号',
-      trigger: 'blur'
+      trigger: 'blur',
     },
     {
       validator: validateIdCard,
       message: '请输入有效的身份证号',
-      trigger: 'blur'
-    }
-  ]
-}
+      trigger: 'blur',
+    },
+  ],
+};
 
 const getUserGroupText = (group?: string) => {
   switch (group) {
     case 'unverified':
-      return '未实名认证'
+      return '未实名认证';
     case 'verified':
-      return '正式用户'
+      return '正式用户';
     case 'sponsor':
-      return '赞助者'
+      return '赞助者';
     case 'admin':
-      return '管理员'
+      return '管理员';
     default:
-      return '未知'
+      return '未知';
   }
-}
+};
 
 const getUserGroupType = (group?: string) => {
   switch (group) {
     case 'unverified':
-      return 'warning'
+      return 'warning';
     case 'verified':
-      return 'info'
+      return 'info';
     case 'sponsor':
-      return 'success'
+      return 'success';
     case 'admin':
-      return 'error'
+      return 'error';
     default:
-      return 'default'
+      return 'default';
   }
-}
+};
 
 const formatDate = (dateString?: string) => {
-  if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('zh-CN');
+};
 
 const maskIdCard = (idCard?: string) => {
-  if (!idCard) return 'N/A'
-  return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2')
-}
+  if (!idCard) return 'N/A';
+  return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2');
+};
 
 const toggleAccessKey = () => {
-  showAccessKey.value = !showAccessKey.value
-}
+  showAccessKey.value = !showAccessKey.value;
+};
 
 const resetAccessKey = () => {
   dialog.warning({
@@ -303,78 +291,78 @@ const resetAccessKey = () => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        const result = await userStore.resetAccessKey()
+        const result = await userStore.resetAccessKey();
         if (result.success) {
-          message.success('访问密钥重置成功')
-          await userStore.fetchUserInfo()
+          message.success('访问密钥重置成功');
+          await userStore.fetchUserInfo();
         } else {
-          message.error(result.message)
+          message.error(result.message);
         }
       } catch (error) {
-        console.error('重置访问密钥失败:', error)
-        message.error('重置访问密钥失败')
+        console.error('重置访问密钥失败:', error);
+        message.error('重置访问密钥失败');
       }
-    }
-  })
-}
+    },
+  });
+};
 
 const handleChangePassword = async () => {
   try {
-    await passwordFormRef.value?.validate()
-    passwordLoading.value = true
-    
+    await passwordFormRef.value?.validate();
+    passwordLoading.value = true;
+
     const result = await userStore.changePassword(
       passwordForm.currentPassword,
-      passwordForm.newPassword
-    )
-    
+      passwordForm.newPassword,
+    );
+
     if (result.success) {
-      message.success('密码修改成功')
+      message.success('密码修改成功');
       Object.assign(passwordForm, {
         currentPassword: '',
         newPassword: '',
-        confirmPassword: ''
-      })
+        confirmPassword: '',
+      });
     } else {
-      message.error(result.message)
+      message.error(result.message);
     }
   } catch (error) {
-    console.error('修改密码失败:', error)
+    console.error('修改密码失败:', error);
   } finally {
-    passwordLoading.value = false
+    passwordLoading.value = false;
   }
-}
+};
 
 const handleSubmitVerification = async () => {
   try {
-    await verificationFormRef.value?.validate()
-    verificationLoading.value = true
-    
+    await verificationFormRef.value?.validate();
+    verificationLoading.value = true;
+
     const result = await userStore.submitRealNameVerification(
       verificationForm.realName,
-      verificationForm.idCard
-    )
-    
+      verificationForm.idCard,
+    );
+
     if (result.success) {
-      message.success('实名认证信息提交成功，已自动通过认证')
-      await userStore.fetchUserInfo()
+      message.success('实名认证信息提交成功，已自动通过认证');
+      await userStore.fetchUserInfo();
       Object.assign(verificationForm, {
         realName: '',
-        idCard: ''
-      })
+        idCard: '',
+      });
     } else {
-      message.error(result.message)
+      message.error(result.message);
     }
   } catch (error) {
-    console.error('提交实名认证失败:', error)
+    console.error('提交实名认证失败:', error);
   } finally {
-    verificationLoading.value = false
+    verificationLoading.value = false;
   }
-}
+};
 
 onMounted(async () => {
-  await userStore.fetchUserInfo()
-})
+  await userStore.fetchUserInfo();
+});
 </script>
 
 <style scoped>
@@ -463,19 +451,19 @@ onMounted(async () => {
   .profile {
     padding: 16px;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .access-key-row {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .access-key-row .n-input {
     margin-right: 0 !important;
     margin-bottom: 8px;

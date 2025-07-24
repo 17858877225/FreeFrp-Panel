@@ -32,7 +32,7 @@
               <component :is="client.icon" />
             </n-icon>
           </template>
-          
+
           <div class="download-info">
             <div class="info-row">
               <span class="label">平台:</span>
@@ -51,7 +51,7 @@
               <span class="value">{{ client.size }}</span>
             </div>
           </div>
-          
+
           <template #action>
             <div class="download-actions">
               <n-button
@@ -65,7 +65,7 @@
                 <template #icon>
                   <n-icon>
                     <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                      <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
                     </svg>
                   </n-icon>
                 </template>
@@ -78,15 +78,11 @@
 
       <!-- 配置示例 -->
       <n-card title="配置文件示例" class="config-example-card">
-        <n-alert type="info" style="margin-bottom: 16px;">
+        <n-alert type="info" style="margin-bottom: 16px">
           以下是一个基本的配置文件示例，实际使用时请在隧道管理页面生成具体配置。
         </n-alert>
-        
-        <n-code
-          :code="configExample"
-          language="ini"
-          show-line-numbers
-        />
+
+        <n-code :code="configExample" language="ini" show-line-numbers />
       </n-card>
 
       <!-- 常见问题 -->
@@ -99,7 +95,7 @@
               <li>Linux/macOS: <code>./frpc -c frpc.ini</code></li>
             </ul>
           </n-collapse-item>
-          
+
           <n-collapse-item title="客户端无法连接怎么办？" name="2">
             <p>请检查以下几点：</p>
             <ul>
@@ -109,7 +105,7 @@
               <li>检查防火墙设置</li>
             </ul>
           </n-collapse-item>
-          
+
           <n-collapse-item title="如何后台运行客户端？" name="3">
             <p>可以使用以下方法后台运行：</p>
             <ul>
@@ -118,7 +114,7 @@
               <li>使用 systemd 服务（Linux）</li>
             </ul>
           </n-collapse-item>
-          
+
           <n-collapse-item title="支持哪些协议？" name="4">
             <p>FreeFrp 支持以下协议：</p>
             <ul>
@@ -135,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue';
 import {
   NCard,
   NButton,
@@ -144,11 +140,11 @@ import {
   NAlert,
   NCollapse,
   NCollapseItem,
-  useMessage
-} from 'naive-ui'
-import { api } from '@/api/index'
+  useMessage,
+} from 'naive-ui';
+import { api } from '@/api/index';
 
-const message = useMessage()
+const message = useMessage();
 
 const clients = ref<any[]>([
   {
@@ -159,7 +155,7 @@ const clients = ref<any[]>([
     size: '8.2 MB',
     color: '#0078d4',
     downloadUrl: '',
-    icon: 'WindowsIcon'
+    icon: 'WindowsIcon',
   },
   {
     name: 'Windows 32位',
@@ -169,7 +165,7 @@ const clients = ref<any[]>([
     size: '7.8 MB',
     color: '#0078d4',
     downloadUrl: '',
-    icon: 'WindowsIcon'
+    icon: 'WindowsIcon',
   },
   {
     name: 'Linux 64位',
@@ -179,7 +175,7 @@ const clients = ref<any[]>([
     size: '8.5 MB',
     color: '#f7931e',
     downloadUrl: '',
-    icon: 'LinuxIcon'
+    icon: 'LinuxIcon',
   },
   {
     name: 'Linux ARM64',
@@ -189,7 +185,7 @@ const clients = ref<any[]>([
     size: '8.1 MB',
     color: '#f7931e',
     downloadUrl: '',
-    icon: 'LinuxIcon'
+    icon: 'LinuxIcon',
   },
   {
     name: 'macOS 64位',
@@ -199,7 +195,7 @@ const clients = ref<any[]>([
     size: '8.3 MB',
     color: '#000000',
     downloadUrl: '',
-    icon: 'AppleIcon'
+    icon: 'AppleIcon',
   },
   {
     name: 'macOS ARM64',
@@ -209,9 +205,9 @@ const clients = ref<any[]>([
     size: '8.0 MB',
     color: '#000000',
     downloadUrl: '',
-    icon: 'AppleIcon'
-  }
-])
+    icon: 'AppleIcon',
+  },
+]);
 
 const configExample = `serverAddr = "节点IP地址"
 serverPort = 7000
@@ -233,29 +229,29 @@ name = "ssh"
 type = "tcp"
 localIP = "127.0.0.1"
 localPort = 22
-remotePort = 6000`
+remotePort = 6000`;
 
 const fetchDownloadLinks = async () => {
   try {
-    const response = await api.get('/download/links')
+    const response = await api.get('/download/links');
     if (response.data.success && response.data.data) {
-      const links = response.data.data
-      clients.value.forEach(client => {
-        const key = `${client.platform.toLowerCase()}_${client.arch}`
+      const links = response.data.data;
+      clients.value.forEach((client) => {
+        const key = `${client.platform.toLowerCase()}_${client.arch}`;
         if (links[key]) {
-          client.downloadUrl = links[key]
+          client.downloadUrl = links[key];
         }
-      })
+      });
     }
   } catch (error) {
-    console.error('获取下载链接失败:', error)
+    console.error('获取下载链接失败:', error);
     // 不显示错误消息，因为管理员可能还未配置下载链接
   }
-}
+};
 
 onMounted(async () => {
-  await fetchDownloadLinks()
-})
+  await fetchDownloadLinks();
+});
 </script>
 
 <style scoped>
@@ -379,11 +375,11 @@ onMounted(async () => {
   .download {
     padding: 16px;
   }
-  
+
   .download-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-row {
     flex-direction: column;
     align-items: flex-start;

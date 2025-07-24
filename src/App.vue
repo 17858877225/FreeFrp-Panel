@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import {
   NConfigProvider,
   NGlobalStyle,
@@ -24,10 +24,10 @@ import {
   NMessageProvider,
   zhCN,
   dateZhCN,
-  darkTheme
-} from 'naive-ui'
+  darkTheme,
+} from 'naive-ui';
 
-const theme = ref(null) // 可以设置为 darkTheme 来启用暗色主题
+const theme = ref(null); // 可以设置为 darkTheme 来启用暗色主题
 </script>
 
 <style>
