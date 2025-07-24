@@ -6,7 +6,10 @@
         <template #icon>
           <n-icon>
             <svg viewBox="0 0 24 24">
-              <path fill="currentColor" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+              <path
+                fill="currentColor"
+                d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
+              />
             </svg>
           </n-icon>
         </template>
@@ -32,18 +35,13 @@
 
     <!-- 节点列表 -->
     <div class="nodes-grid">
-      <n-card
-        v-for="node in nodes"
-        :key="node.id"
-        class="node-card"
-        :title="node.name"
-      >
+      <n-card v-for="node in nodes" :key="node.id" class="node-card" :title="node.name">
         <template #header-extra>
           <n-tag :type="node.status === 'online' ? 'success' : 'error'">
             {{ node.status === 'online' ? '在线' : '离线' }}
           </n-tag>
         </template>
-        
+
         <div class="node-info">
           <div class="info-section">
             <h4>基本信息</h4>
@@ -70,7 +68,7 @@
               </n-tag>
             </div>
           </div>
-          
+
           <div class="info-section" v-if="node.status === 'online'">
             <h4>性能指标</h4>
             <div class="info-row">
@@ -80,7 +78,7 @@
                   type="line"
                   :percentage="node.cpuUsage || 0"
                   :show-indicator="false"
-                  style="width: 60px; margin-right: 8px;"
+                  style="width: 60px; margin-right: 8px"
                 />
                 {{ node.cpuUsage || 0 }}%
               </span>
@@ -92,7 +90,7 @@
                   type="line"
                   :percentage="node.memoryUsage || 0"
                   :show-indicator="false"
-                  style="width: 60px; margin-right: 8px;"
+                  style="width: 60px; margin-right: 8px"
                 />
                 {{ node.memoryUsage || 0 }}%
               </span>
@@ -106,7 +104,7 @@
               <span class="value">{{ node.latency || 0 }}ms</span>
             </div>
           </div>
-          
+
           <div class="info-section">
             <h4>流量统计</h4>
             <div class="info-row">
@@ -130,7 +128,7 @@
               <span class="value">{{ formatSpeed(node.downloadSpeed || 0) }}</span>
             </div>
           </div>
-          
+
           <div class="info-section">
             <h4>其他信息</h4>
             <div class="info-row">
@@ -144,7 +142,7 @@
                   v-for="protocol in node.supportedProtocols || ['TCP', 'UDP', 'HTTP', 'HTTPS']"
                   :key="protocol"
                   size="small"
-                  style="margin-right: 4px;"
+                  style="margin-right: 4px"
                 >
                   {{ protocol }}
                 </n-tag>
@@ -158,7 +156,7 @@
         </div>
       </n-card>
     </div>
-    
+
     <div v-if="nodes.length === 0" class="no-nodes">
       <n-empty description="暂无节点数据" />
     </div>
@@ -166,99 +164,90 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import {
-  NCard,
-  NTag,
-  NButton,
-  NIcon,
-  NStatistic,
-  NProgress,
-  NEmpty,
-  useMessage
-} from 'naive-ui'
-import { api } from '@/api/index'
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { NCard, NTag, NButton, NIcon, NStatistic, NProgress, NEmpty, useMessage } from 'naive-ui';
+import { api } from '@/api/index';
 
-const message = useMessage()
+const message = useMessage();
 
-const nodes = ref<any[]>([])
-const loading = ref(false)
-let refreshTimer: NodeJS.Timeout | null = null
+const nodes = ref<any[]>([]);
+const loading = ref(false);
+let refreshTimer: NodeJS.Timeout | null = null;
 
 const onlineNodes = computed(() => {
-  return nodes.value.filter(node => node.status === 'online').length
-})
+  return nodes.value.filter((node) => node.status === 'online').length;
+});
 
 const offlineNodes = computed(() => {
-  return nodes.value.filter(node => node.status === 'offline').length
-})
+  return nodes.value.filter((node) => node.status === 'offline').length;
+});
 
 const totalTraffic = computed(() => {
-  const total = nodes.value.reduce((sum, node) => sum + (node.totalTraffic || 0), 0)
-  return Math.round(total / (1024 * 1024 * 1024) * 100) / 100 // 转换为GB并保留2位小数
-})
+  const total = nodes.value.reduce((sum, node) => sum + (node.totalTraffic || 0), 0);
+  return Math.round((total / (1024 * 1024 * 1024)) * 100) / 100; // 转换为GB并保留2位小数
+});
 
 const formatBytes = (bytes: number) => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const formatSpeed = (bytesPerSecond: number) => {
-  if (bytesPerSecond === 0) return '0 B/s'
-  const k = 1024
-  const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s']
-  const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k))
-  return parseFloat((bytesPerSecond / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
+  if (bytesPerSecond === 0) return '0 B/s';
+  const k = 1024;
+  const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+  const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k));
+  return parseFloat((bytesPerSecond / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const formatDate = (dateString?: string) => {
-  if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('zh-CN');
+};
 
 const fetchNodes = async () => {
   try {
-    loading.value = true
-    const response = await api.get('/nodes/status')
-    nodes.value = response.data.data || []
+    loading.value = true;
+    const response = await api.get('/nodes/status');
+    nodes.value = response.data.data || [];
   } catch (error) {
-    console.error('获取节点状态失败:', error)
-    message.error('获取节点状态失败')
+    console.error('获取节点状态失败:', error);
+    message.error('获取节点状态失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const refreshNodes = async () => {
-  await fetchNodes()
-  message.success('节点状态已刷新')
-}
+  await fetchNodes();
+  message.success('节点状态已刷新');
+};
 
 const startAutoRefresh = () => {
   // 每30秒自动刷新一次
   refreshTimer = setInterval(() => {
-    fetchNodes()
-  }, 30000)
-}
+    fetchNodes();
+  }, 30000);
+};
 
 const stopAutoRefresh = () => {
   if (refreshTimer) {
-    clearInterval(refreshTimer)
-    refreshTimer = null
+    clearInterval(refreshTimer);
+    refreshTimer = null;
   }
-}
+};
 
 onMounted(async () => {
-  await fetchNodes()
-  startAutoRefresh()
-})
+  await fetchNodes();
+  startAutoRefresh();
+});
 
 onUnmounted(() => {
-  stopAutoRefresh()
-})
+  stopAutoRefresh();
+});
 </script>
 
 <style scoped>
@@ -362,27 +351,27 @@ onUnmounted(() => {
   .nodes {
     padding: 16px;
   }
-  
+
   .nodes-header {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
   }
-  
+
   .nodes-stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .nodes-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
   }
-  
+
   .value {
     justify-content: flex-start;
   }

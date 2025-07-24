@@ -39,7 +39,10 @@
           </div>
           <div class="info-item">
             <span class="label">隧道数量</span>
-            <span class="value">{{ userStore.user?.tunnelCount || 0 }} / {{ getUserGroupLimits(userStore.user?.userGroup).tunnelLimit }}</span>
+            <span class="value"
+              >{{ userStore.user?.tunnelCount || 0 }} /
+              {{ getUserGroupLimits(userStore.user?.userGroup).tunnelLimit }}</span
+            >
           </div>
           <div class="info-item">
             <span class="label">剩余流量</span>
@@ -47,11 +50,15 @@
           </div>
           <div class="info-item">
             <span class="label">入站带宽</span>
-            <span class="value">{{ getUserGroupLimits(userStore.user?.userGroup).inboundBandwidth }}</span>
+            <span class="value">{{
+              getUserGroupLimits(userStore.user?.userGroup).inboundBandwidth
+            }}</span>
           </div>
           <div class="info-item">
             <span class="label">出站带宽</span>
-            <span class="value">{{ getUserGroupLimits(userStore.user?.userGroup).outboundBandwidth }}</span>
+            <span class="value">{{
+              getUserGroupLimits(userStore.user?.userGroup).outboundBandwidth
+            }}</span>
           </div>
         </div>
       </n-card>
@@ -61,7 +68,8 @@
         <div class="checkin-content">
           <div class="checkin-info">
             <p>连续签到天数: {{ userStore.user?.consecutiveCheckinDays || 0 }} 天</p>
-            <p>今日签到状态: 
+            <p>
+              今日签到状态:
               <n-tag :type="userStore.user?.hasCheckedInToday ? 'success' : 'default'">
                 {{ userStore.user?.hasCheckedInToday ? '已签到' : '未签到' }}
               </n-tag>
@@ -103,59 +111,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { NCard, NTag, NButton, useMessage } from 'naive-ui'
-import { useUserStore } from '@/stores/user'
-import { api } from '@/api/index'
+import { ref, onMounted } from 'vue';
+import { NCard, NTag, NButton, useMessage } from 'naive-ui';
+import { useUserStore } from '@/stores/user';
+import { api } from '@/api/index';
 
-const userStore = useUserStore()
-const message = useMessage()
+const userStore = useUserStore();
+const message = useMessage();
 
-const checkinLoading = ref(false)
-const announcements = ref<any[]>([])
+const checkinLoading = ref(false);
+const announcements = ref<any[]>([]);
 
 const getRealNameStatusText = (status?: string) => {
   switch (status) {
     case 'verified':
-      return '已认证'
+      return '已认证';
     case 'pending':
-      return '审核中'
+      return '审核中';
     case 'rejected':
-      return '已拒绝'
+      return '已拒绝';
     default:
-      return '未认证'
+      return '未认证';
   }
-}
+};
 
 const getUserGroupText = (group?: string) => {
   switch (group) {
     case 'unverified':
-      return '未实名认证'
+      return '未实名认证';
     case 'verified':
-      return '正式用户'
+      return '正式用户';
     case 'sponsor':
-      return '赞助者'
+      return '赞助者';
     case 'admin':
-      return '管理员'
+      return '管理员';
     default:
-      return '未知'
+      return '未知';
   }
-}
+};
 
 const getUserGroupType = (group?: string) => {
   switch (group) {
     case 'unverified':
-      return 'warning'
+      return 'warning';
     case 'verified':
-      return 'info'
+      return 'info';
     case 'sponsor':
-      return 'success'
+      return 'success';
     case 'admin':
-      return 'error'
+      return 'error';
     default:
-      return 'default'
+      return 'default';
   }
-}
+};
 
 const getUserGroupLimits = (group?: string) => {
   switch (group) {
@@ -163,80 +171,80 @@ const getUserGroupLimits = (group?: string) => {
       return {
         tunnelLimit: 3,
         inboundBandwidth: '8 Mbps',
-        outboundBandwidth: '8 Mbps'
-      }
+        outboundBandwidth: '8 Mbps',
+      };
     case 'verified':
       return {
         tunnelLimit: 10,
         inboundBandwidth: '24 Mbps',
-        outboundBandwidth: '24 Mbps'
-      }
+        outboundBandwidth: '24 Mbps',
+      };
     case 'sponsor':
       return {
         tunnelLimit: 25,
         inboundBandwidth: '128 Mbps',
-        outboundBandwidth: '128 Mbps'
-      }
+        outboundBandwidth: '128 Mbps',
+      };
     case 'admin':
       return {
         tunnelLimit: '无限制',
         inboundBandwidth: '无限制',
-        outboundBandwidth: '无限制'
-      }
+        outboundBandwidth: '无限制',
+      };
     default:
       return {
         tunnelLimit: 0,
         inboundBandwidth: '0 Mbps',
-        outboundBandwidth: '0 Mbps'
-      }
+        outboundBandwidth: '0 Mbps',
+      };
   }
-}
+};
 
 const formatDate = (dateString?: string) => {
-  if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('zh-CN');
+};
 
 const formatBytes = (bytes: number) => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const handleCheckin = async () => {
   try {
-    checkinLoading.value = true
-    const result = await userStore.checkin()
-    
+    checkinLoading.value = true;
+    const result = await userStore.checkin();
+
     if (result.success) {
-      message.success(`签到成功！获得 ${result.data.reward} 流量奖励`)
-      await userStore.fetchUserInfo()
+      message.success(`签到成功！获得 ${result.data.reward} 流量奖励`);
+      await userStore.fetchUserInfo();
     } else {
-      message.error(result.message)
+      message.error(result.message);
     }
   } catch (error) {
-    console.error('签到失败:', error)
-    message.error('签到失败，请稍后重试')
+    console.error('签到失败:', error);
+    message.error('签到失败，请稍后重试');
   } finally {
-    checkinLoading.value = false
+    checkinLoading.value = false;
   }
-}
+};
 
 const fetchAnnouncements = async () => {
   try {
-    const response = await api.get('/announcements')
-    announcements.value = response.data.data || []
+    const response = await api.get('/announcements');
+    announcements.value = response.data.data || [];
   } catch (error) {
-    console.error('获取公告失败:', error)
+    console.error('获取公告失败:', error);
   }
-}
+};
 
 onMounted(async () => {
-  await userStore.fetchUserInfo()
-  await fetchAnnouncements()
-})
+  await userStore.fetchUserInfo();
+  await fetchAnnouncements();
+});
 </script>
 
 <style scoped>
@@ -378,7 +386,7 @@ onMounted(async () => {
   .dashboard-content {
     grid-template-columns: 2fr 1fr;
   }
-  
+
   .checkin-card,
   .announcement-card {
     grid-column: 2;
@@ -389,16 +397,16 @@ onMounted(async () => {
   .dashboard {
     padding: 16px;
   }
-  
+
   .user-info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .checkin-content {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .announcement-header {
     flex-direction: column;
     align-items: flex-start;

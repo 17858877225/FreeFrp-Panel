@@ -6,13 +6,16 @@
         <n-input
           v-model:value="searchQuery"
           placeholder="搜索用户名或邮箱"
-          style="width: 300px;"
+          style="width: 300px"
           @input="handleSearch"
         >
           <template #prefix>
             <n-icon>
               <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                <path
+                  fill="currentColor"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+                />
               </svg>
             </n-icon>
           </template>
@@ -21,7 +24,10 @@
           <template #icon>
             <n-icon>
               <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+                <path
+                  fill="currentColor"
+                  d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
+                />
               </svg>
             </n-icon>
           </template>
@@ -94,7 +100,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="detail-section" v-if="selectedUser.realName">
           <h4>实名信息</h4>
           <div class="detail-grid">
@@ -118,7 +124,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="detail-section">
           <h4>使用统计</h4>
           <div class="detail-grid">
@@ -145,7 +151,7 @@
           </div>
         </div>
       </div>
-      
+
       <template #action>
         <n-button @click="showUserModal = false">关闭</n-button>
       </template>
@@ -154,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, h } from 'vue'
+import { ref, computed, onMounted, h } from 'vue';
 import {
   NCard,
   NButton,
@@ -165,92 +171,108 @@ import {
   NTag,
   NModal,
   useMessage,
-  useDialog
-} from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
-import { api } from '@/api/index'
+  useDialog,
+} from 'naive-ui';
+import type { DataTableColumns } from 'naive-ui';
+import { api } from '@/api/index';
 
-const message = useMessage()
-const dialog = useDialog()
+const message = useMessage();
+const dialog = useDialog();
 
-const users = ref<any[]>([])
-const loading = ref(false)
-const searchQuery = ref('')
-const showUserModal = ref(false)
-const selectedUser = ref<any>(null)
+const users = ref<any[]>([]);
+const loading = ref(false);
+const searchQuery = ref('');
+const showUserModal = ref(false);
+const selectedUser = ref<any>(null);
 
 const pagination = {
   page: 1,
   pageSize: 20,
   showSizePicker: true,
-  pageSizes: [10, 20, 50, 100]
-}
+  pageSizes: [10, 20, 50, 100],
+};
 
 const filteredUsers = computed(() => {
-  if (!searchQuery.value) return users.value
-  const query = searchQuery.value.toLowerCase()
-  return users.value.filter(user => 
-    user.username.toLowerCase().includes(query) ||
-    user.email.toLowerCase().includes(query)
-  )
-})
+  if (!searchQuery.value) return users.value;
+  const query = searchQuery.value.toLowerCase();
+  return users.value.filter(
+    (user) =>
+      user.username.toLowerCase().includes(query) || user.email.toLowerCase().includes(query),
+  );
+});
 
-const totalUsers = computed(() => users.value.length)
-const activeUsers = computed(() => users.value.filter(u => u.status === 'active').length)
-const verifiedUsers = computed(() => users.value.filter(u => u.realNameStatus === 'verified').length)
-const bannedUsers = computed(() => users.value.filter(u => u.status === 'banned').length)
+const totalUsers = computed(() => users.value.length);
+const activeUsers = computed(() => users.value.filter((u) => u.status === 'active').length);
+const verifiedUsers = computed(
+  () => users.value.filter((u) => u.realNameStatus === 'verified').length,
+);
+const bannedUsers = computed(() => users.value.filter((u) => u.status === 'banned').length);
 
 const getUserGroupText = (group?: string) => {
   switch (group) {
-    case 'unverified': return '未实名认证'
-    case 'verified': return '正式用户'
-    case 'sponsor': return '赞助者'
-    case 'admin': return '管理员'
-    default: return '未知'
+    case 'unverified':
+      return '未实名认证';
+    case 'verified':
+      return '正式用户';
+    case 'sponsor':
+      return '赞助者';
+    case 'admin':
+      return '管理员';
+    default:
+      return '未知';
   }
-}
+};
 
 const getUserGroupType = (group?: string) => {
   switch (group) {
-    case 'unverified': return 'warning'
-    case 'verified': return 'info'
-    case 'sponsor': return 'success'
-    case 'admin': return 'error'
-    default: return 'default'
+    case 'unverified':
+      return 'warning';
+    case 'verified':
+      return 'info';
+    case 'sponsor':
+      return 'success';
+    case 'admin':
+      return 'error';
+    default:
+      return 'default';
   }
-}
+};
 
 const getRealNameStatusText = (status?: string) => {
   switch (status) {
-    case 'verified': return '已认证'
-    case 'pending': return '审核中'
-    case 'rejected': return '已拒绝'
-    default: return '未认证'
+    case 'verified':
+      return '已认证';
+    case 'pending':
+      return '审核中';
+    case 'rejected':
+      return '已拒绝';
+    default:
+      return '未认证';
   }
-}
+};
 
 const formatDate = (dateString?: string) => {
-  if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleString('zh-CN')
-}
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('zh-CN');
+};
 
 const formatBytes = (bytes: number) => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const maskIdCard = (idCard?: string) => {
-  if (!idCard) return 'N/A'
-  return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2')
-}
+  if (!idCard) return 'N/A';
+  return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2');
+};
 
 const viewUser = (user: any) => {
-  selectedUser.value = user
-  showUserModal.value = true
-}
+  selectedUser.value = user;
+  showUserModal.value = true;
+};
 
 const banUser = (user: any) => {
   dialog.warning({
@@ -260,16 +282,16 @@ const banUser = (user: any) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        await api.post(`/admin/users/${user.id}/ban`)
-        message.success('用户封禁成功')
-        await fetchUsers()
+        await api.post(`/admin/users/${user.id}/ban`);
+        message.success('用户封禁成功');
+        await fetchUsers();
       } catch (error) {
-        console.error('封禁用户失败:', error)
-        message.error('封禁用户失败')
+        console.error('封禁用户失败:', error);
+        message.error('封禁用户失败');
       }
-    }
-  })
-}
+    },
+  });
+};
 
 const unbanUser = (user: any) => {
   dialog.info({
@@ -279,16 +301,16 @@ const unbanUser = (user: any) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        await api.post(`/admin/users/${user.id}/unban`)
-        message.success('用户解封成功')
-        await fetchUsers()
+        await api.post(`/admin/users/${user.id}/unban`);
+        message.success('用户解封成功');
+        await fetchUsers();
       } catch (error) {
-        console.error('解封用户失败:', error)
-        message.error('解封用户失败')
+        console.error('解封用户失败:', error);
+        message.error('解封用户失败');
       }
-    }
-  })
-}
+    },
+  });
+};
 
 const changeUserGroup = (user: any, newGroup: string) => {
   dialog.info({
@@ -298,70 +320,78 @@ const changeUserGroup = (user: any, newGroup: string) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        await api.put(`/admin/users/${user.id}/group`, { userGroup: newGroup })
-        message.success('用户组修改成功')
-        await fetchUsers()
+        await api.put(`/admin/users/${user.id}/group`, { userGroup: newGroup });
+        message.success('用户组修改成功');
+        await fetchUsers();
       } catch (error) {
-        console.error('修改用户组失败:', error)
-        message.error('修改用户组失败')
+        console.error('修改用户组失败:', error);
+        message.error('修改用户组失败');
       }
-    }
-  })
-}
+    },
+  });
+};
 
 const columns: DataTableColumns<any> = [
   {
     title: 'ID',
     key: 'id',
-    width: 80
+    width: 80,
   },
   {
     title: '用户名',
     key: 'username',
-    width: 120
+    width: 120,
   },
   {
     title: '邮箱',
     key: 'email',
-    width: 200
+    width: 200,
   },
   {
     title: '用户组',
     key: 'userGroup',
     width: 120,
     render(row) {
-      return h(NTag, {
-        type: getUserGroupType(row.userGroup),
-        size: 'small'
-      }, { default: () => getUserGroupText(row.userGroup) })
-    }
+      return h(
+        NTag,
+        {
+          type: getUserGroupType(row.userGroup),
+          size: 'small',
+        },
+        { default: () => getUserGroupText(row.userGroup) },
+      );
+    },
   },
   {
     title: '状态',
     key: 'status',
     width: 80,
     render(row) {
-      return h(NTag, {
-        type: row.status === 'active' ? 'success' : 'error',
-        size: 'small'
-      }, { default: () => row.status === 'active' ? '正常' : '封禁' })
-    }
+      return h(
+        NTag,
+        {
+          type: row.status === 'active' ? 'success' : 'error',
+          size: 'small',
+        },
+        { default: () => (row.status === 'active' ? '正常' : '封禁') },
+      );
+    },
   },
   {
     title: '隧道数',
     key: 'tunnelCount',
     width: 80,
     render(row) {
-      return row.tunnelCount || 0
-    }
+      return row.tunnelCount || 0;
+    },
   },
   {
     title: '注册时间',
     key: 'createdAt',
     width: 160,
     render(row) {
-      return formatDate(row.createdAt)
-    }
+      return formatDate(row.createdAt);
+    },
   },
   {
     title: '操作',
@@ -369,62 +399,80 @@ const columns: DataTableColumns<any> = [
     width: 200,
     render(row) {
       return h('div', { style: 'display: flex; gap: 8px; flex-wrap: wrap;' }, [
-        h(NButton, {
-          size: 'small',
-          onClick: () => viewUser(row)
-        }, { default: () => '详情' }),
-        
-        row.status === 'active' ? h(NButton, {
-          size: 'small',
-          type: 'warning',
-          onClick: () => banUser(row)
-        }, { default: () => '封禁' }) : h(NButton, {
-          size: 'small',
-          type: 'info',
-          onClick: () => unbanUser(row)
-        }, { default: () => '解封' }),
-        
-        h(NButton, {
-          size: 'small',
-          type: 'primary',
-          onClick: () => {
-            // 简单的用户组切换逻辑
-            const groups = ['unverified', 'verified', 'sponsor', 'admin']
-            const currentIndex = groups.indexOf(row.userGroup)
-            const nextGroup = groups[(currentIndex + 1) % groups.length]
-            changeUserGroup(row, nextGroup)
-          }
-        }, { default: () => '改组' })
-      ])
-    }
-  }
-]
+        h(
+          NButton,
+          {
+            size: 'small',
+            onClick: () => viewUser(row),
+          },
+          { default: () => '详情' },
+        ),
+
+        row.status === 'active'
+          ? h(
+              NButton,
+              {
+                size: 'small',
+                type: 'warning',
+                onClick: () => banUser(row),
+              },
+              { default: () => '封禁' },
+            )
+          : h(
+              NButton,
+              {
+                size: 'small',
+                type: 'info',
+                onClick: () => unbanUser(row),
+              },
+              { default: () => '解封' },
+            ),
+
+        h(
+          NButton,
+          {
+            size: 'small',
+            type: 'primary',
+            onClick: () => {
+              // 简单的用户组切换逻辑
+              const groups = ['unverified', 'verified', 'sponsor', 'admin'];
+              const currentIndex = groups.indexOf(row.userGroup);
+              const nextGroup = groups[(currentIndex + 1) % groups.length];
+              changeUserGroup(row, nextGroup);
+            },
+          },
+          { default: () => '改组' },
+        ),
+      ]);
+    },
+  },
+];
 
 const fetchUsers = async () => {
   try {
-    loading.value = true
-    const response = await api.get('/admin/users')
-    users.value = response.data.data || []
+    loading.value = true;
+    const response = await api.get('/admin/users');
+    users.value = response.data.data || [];
   } catch (error) {
-    console.error('获取用户列表失败:', error)
-    message.error('获取用户列表失败')
+    console.error('获取用户列表失败:', error);
+    message.error('获取用户列表失败');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const refreshUsers = async () => {
-  await fetchUsers()
-  message.success('用户列表已刷新')
-}
+  await fetchUsers();
+  message.success('用户列表已刷新');
+};
 
 const handleSearch = () => {
   // 搜索逻辑已在 computed 中处理
-}
+};
 
 onMounted(async () => {
-  await fetchUsers()
-})
+  await fetchUsers();
+});
 </script>
 
 <style scoped>
@@ -520,26 +568,26 @@ onMounted(async () => {
   .admin-users {
     padding: 16px;
   }
-  
+
   .users-header {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
   }
-  
+
   .header-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .users-stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .detail-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .detail-item {
     flex-direction: column;
     align-items: flex-start;
